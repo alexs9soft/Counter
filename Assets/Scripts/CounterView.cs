@@ -18,8 +18,8 @@ public class CounterView : MonoBehaviour
             _counter.AmountChanged -= WriteDisplay;
     }
 
-    private void WriteDisplay()
+    private void WriteDisplay(int value)
     {
-        _text.text = _counter.GetAmountTimer().ToString("");
+        _text.text = value.ToString("");
     }
 }

@@ -12,7 +12,7 @@ public class Counter : MonoBehaviour
     private Coroutine _coroutine;
     private bool _isWork;
 
-    public event Action AmountChanged;
+    public event Action<int> AmountChanged;
 
     public int GetAmountTimer()
     {
@@ -48,7 +48,7 @@ public class Counter : MonoBehaviour
 
         while (enabled)
         {
-            AmountChanged?.Invoke();
+            AmountChanged?.Invoke(_amount);
             _amount++;
 
             yield return wait;
