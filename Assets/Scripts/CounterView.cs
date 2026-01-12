@@ -6,6 +6,11 @@ public class CounterView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Counter _counter;
 
+    private void Start()
+    {
+        _text.text = "";
+    }
+
     private void OnEnable()
     {
         if (_counter != null)

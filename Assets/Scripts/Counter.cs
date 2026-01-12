@@ -7,39 +7,44 @@ public class Counter : MonoBehaviour
 {
     [SerializeField] private float _delay;
     [SerializeField] private int _amount;
+    [SerializeField] private InputReader _reader;
 
-    private InputReader _reader;
     private Coroutine _coroutine;
-    private bool _isWork;
 
     public event Action<int> AmountChanged;
 
-    public int GetAmountTimer()
-    {
-        return _amount;
-    }
-
-    private void Start()
+    private void Awake()
     {
         _reader = GetComponent<InputReader>();
-        _isWork = false;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if (_reader.GetIsWork())
+        if (_reader != null)
         {
-            if (_isWork == false)
-            {
-                _coroutine = StartCoroutine(CountTimer());
-                _isWork = true;
-            }
-            else if (_isWork == true && _coroutine != null)
-            {
-                StopCoroutine(_coroutine);
-                _isWork = false;
-            }
+            _reader.OnMouseClick += StartCount;
         }
+    }
+
+    private void OnDisable()
+    {
+        if (_reader != null)
+        {
+            _reader.OnMouseClick -= StartCount;
+        }
+    }
+
+    private void StartCount()
+    {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+
+            _coroutine = null;
+            return;
+        }
+
+        _coroutine = StartCoroutine(CountTimer());
     }
 
     private IEnumerator CountTimer()
@@ -48,9 +53,9 @@ public class Counter : MonoBehaviour
 
         while (enabled)
         {
-            AmountChanged?.Invoke(_amount);
             _amount++;
-
+            AmountChanged?.Invoke(_amount);
+            
             yield return wait;
         }
     }
