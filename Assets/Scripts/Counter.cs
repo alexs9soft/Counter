@@ -1,31 +1,40 @@
+using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(InputReader))]
 public class Counter : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private float _delay;
     [SerializeField] private int _amount;
 
+    private InputReader _reader;
     private Coroutine _coroutine;
-    private bool _isWork = false;
+    private bool _isWork;
+
+    public event Action AmountChanged;
+
+    public int GetAmountTimer()
+    {
+        return _amount;
+    }
 
     private void Start()
     {
-        _text.text = "";
+        _reader = GetComponent<InputReader>();
+        _isWork = false;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (_reader.GetIsWork())
         {
             if (_isWork == false)
             {
                 _coroutine = StartCoroutine(CountTimer());
                 _isWork = true;
             }
-            else
+            else if (_isWork == true && _coroutine != null)
             {
                 StopCoroutine(_coroutine);
                 _isWork = false;
@@ -37,17 +46,12 @@ public class Counter : MonoBehaviour
     {
         var wait = new WaitForSeconds(_delay);
 
-        for (int i = _amount; i < int.MaxValue; i++)
+        while (enabled)
         {
-            WriteDisplay(i);
+            AmountChanged?.Invoke();
             _amount++;
 
             yield return wait;
         }
-    }
-
-    private void WriteDisplay(int count)
-    {
-        _text.text = count.ToString("");
     }
 }
