@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(InputReader))]
 public class Counter : MonoBehaviour
 {
     [SerializeField] private float _delay;
@@ -12,11 +11,6 @@ public class Counter : MonoBehaviour
     private Coroutine _coroutine;
 
     public event Action<int> AmountChanged;
-
-    private void Awake()
-    {
-        _reader = GetComponent<InputReader>();
-    }
 
     private void OnEnable()
     {
